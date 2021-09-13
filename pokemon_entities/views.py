@@ -1,9 +1,12 @@
 import json
 
+from django.conf import settings
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 import folium
+
+from .models import Pokemon
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -40,13 +43,21 @@ def show_all_pokemons(request):
                 pokemon['img_url']
             )
 
-    pokemons_on_page = []
-    for pokemon in pokemons:
-        pokemons_on_page.append({
-            'pokemon_id': pokemon['pokemon_id'],
-            'img_url': pokemon['img_url'],
-            'title_ru': pokemon['title_ru'],
-        })
+    new_fields_names = ['pokemon_id', 'title_ru', 'img_url', ]
+    current_fields_names = [field.name for field in Pokemon._meta.fields]
+    mapper = dict(zip(new_fields_names, current_fields_names))
+
+    pokemons_on_page = (Pokemon.objects
+                        .exclude(image__isnull=True)
+                        .extra(select=mapper)
+                        .values(*mapper.keys()))
+
+    for pokemon in pokemons_on_page:
+        uri = request.build_absolute_uri(
+            f'{settings.MEDIA_URL}'
+            f"{pokemon['img_url']}"
+        )
+        pokemon['img_url'] = uri
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
