@@ -1,12 +1,13 @@
 import json
 
 from django.conf import settings
+from django.db.models import F
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 import folium
 
-from .models import Pokemon
+from .models import Pokemon, PokemonEntity
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -31,17 +32,22 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 
 def show_all_pokemons(request):
-    with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-        pokemons = json.load(database)['pokemons']
-
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for pokemon in pokemons:
-        for pokemon_entity in pokemon['entities']:
-            add_pokemon(
-                folium_map, pokemon_entity['lat'],
-                pokemon_entity['lon'],
-                pokemon['img_url']
-            )
+
+    pokemons_entities = (PokemonEntity.objects
+                         .select_related('pokemon')
+                         .values('lat', 'lon', 'pokemon__image')
+                         .annotate(img_url=F('pokemon__image')))
+
+    for pokemon_entity in pokemons_entities:
+        uri = request.build_absolute_uri(
+            f'{settings.MEDIA_URL}'
+            f"{pokemon_entity['img_url']}"
+        )
+        pokemon_entity['img_url'] = uri
+
+        add_pokemon(folium_map, pokemon_entity['lat'],
+                    pokemon_entity['lon'], pokemon_entity['img_url'])
 
     new_fields_names = ['pokemon_id', 'title_ru', 'img_url', ]
     current_fields_names = [field.name for field in Pokemon._meta.fields]
