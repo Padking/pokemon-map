@@ -65,7 +65,7 @@ def show_all_pokemons(request):
                     pokemon_entity['lon'], pokemon_entity['img_url'])
 
     new_fields_names = ['pokemon_id', 'title_ru', 'img_url', ]
-    current_fields_names = [field.name for field in Pokemon._meta.fields]
+    current_fields_names = ['id', 'title', 'image', ]
     mapper = dict(zip(new_fields_names, current_fields_names))
 
     pokemons_on_page = (Pokemon.objects
@@ -95,10 +95,12 @@ def show_pokemon(request, pokemon_id):
 
     pokemons_entities = (pokemons_kind.pokemonentity_set.all()
                          .select_related('pokemon')
-                         .annotate(img_url=F('pokemon__image'),
-                                   title_ru=F('pokemon__title'))
-                         .values('pokemon_id', 'title_ru',
-                                 'lat', 'lon', 'img_url'))
+                         .annotate(title_ru=F('pokemon__title'),
+                                   description=F('pokemon__description'),
+                                   img_url=F('pokemon__image'))
+                         .values('pokemon_id', 'title_ru', 
+                                 'description', 'img_url',
+                                 'lat', 'lon'))
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemons_entities:
