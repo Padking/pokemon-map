@@ -96,9 +96,12 @@ def show_pokemon(request, pokemon_id):
     pokemons_entities = (pokemons_kind.pokemonentity_set.all()
                          .select_related('pokemon')
                          .annotate(title_ru=F('pokemon__title'),
+                                   title_en=F('pokemon__title_en'),
+                                   title_jp=F('pokemon__title_jp'),
                                    description=F('pokemon__description'),
                                    img_url=F('pokemon__image'))
-                         .values('pokemon_id', 'title_ru', 
+                         .values('pokemon_id', 'title_ru',
+                                 'title_en', 'title_jp',
                                  'description', 'img_url',
                                  'lat', 'lon'))
 
