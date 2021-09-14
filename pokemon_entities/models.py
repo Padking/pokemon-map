@@ -5,6 +5,7 @@ from .custom_storage import OverwriteStorage
 
 class Pokemon(models.Model):
     title = models.CharField(max_length=200)
+    description = models.TextField(blank=False, null=True)
     image = models.ImageField(max_length=200,
                               null=True,
                               storage=OverwriteStorage())
