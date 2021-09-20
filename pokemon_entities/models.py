@@ -11,6 +11,11 @@ class Pokemon(models.Model):
     image = models.ImageField(max_length=200,
                               null=True,
                               storage=OverwriteStorage())
+    previous_evolution = models.ForeignKey('self',
+                                           null=True,
+                                           blank=True,
+                                           related_name='next_evolutions',
+                                           on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.title}'
