@@ -46,38 +46,25 @@ def get_pokemons_kind(by_id) -> Pokemon:
 
 
 def show_all_pokemons(request):
-    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
+    absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
     pokemons_entities = (PokemonEntity.objects
                          .select_related('pokemon')
                          .values('lat', 'lon', 'pokemon__image')
-                         .annotate(img_url=F('pokemon__image')))
+                         .annotate(img_url=Concat(V(f'{absolute_uri}'),
+                                   'pokemon__image')))
 
+    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemons_entities:
-        uri = request.build_absolute_uri(
-            f'{settings.MEDIA_URL}'
-            f"{pokemon_entity['img_url']}"
-        )
-        pokemon_entity['img_url'] = uri
-
         add_pokemon(folium_map, pokemon_entity['lat'],
                     pokemon_entity['lon'], pokemon_entity['img_url'])
 
-    new_fields_names = ['pokemon_id', 'title_ru', 'img_url', ]
-    current_fields_names = ['id', 'title', 'image', ]
-    mapper = dict(zip(new_fields_names, current_fields_names))
-
     pokemons_on_page = (Pokemon.objects
                         .filter(id__in=PokemonEntity.objects.values('pokemon'))
-                        .extra(select=mapper)
-                        .values(*mapper.keys()))
-
-    for pokemon in pokemons_on_page:
-        uri = request.build_absolute_uri(
-            f'{settings.MEDIA_URL}'
-            f"{pokemon['img_url']}"
-        )
-        pokemon['img_url'] = uri
+                        .annotate(pokemon_id=F('id'),
+                                  title_ru=F('title'),
+                                  img_url=Concat(V(f'{absolute_uri}'),
+                                  'image')))
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
