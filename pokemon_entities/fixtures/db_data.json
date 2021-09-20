@@ -1,0 +1,170 @@
+[
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 1,
+    "fields": {
+        "title": "Бульбазавр",
+        "title_en": "Bulbasaur",
+        "title_jp": "フシギダネ",
+        "description": "cтартовый покемон двойного травяного и ядовитого типа из первого поколения и региона Канто. В национальном покедексе под номером 1. На 16 уровне эволюционирует в Ивизавра. Ивизавр на 32 уровне эволюционирует в Венузавра. Наряду с Чармандером и Сквиртлом, Бульбазавр является одним из трёх стартовых покемонов региона Канто.",
+        "image": "bulbazavr.png",
+        "previous_evolution": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 2,
+    "fields": {
+        "title": "Ивизавр",
+        "title_en": "Ivysaur",
+        "title_jp": "フシギソウ",
+        "description": "покемон двойного травяного и ядовитого типа из первого поколения покемонов. Эволюционирует из стартового покемона Бульбазавра на 16 уровне. Становится Венузавром на 32 уровне.",
+        "image": "Ivysaur.png",
+        "previous_evolution": 1
+    }
+},
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 3,
+    "fields": {
+        "title": "Венузавр",
+        "title_en": "Venusaur",
+        "title_jp": "フシギバナ",
+        "description": "покемон двойного травяного и ядовитого типа из первого поколения покемонов. На 32 уровне эволюционирует из Ивизавра. Финальная эволюция травяного стартовика Бульбазавра. Развивается в Мега Венузавра с помощью камня Венусарита.",
+        "image": "venusaur.png",
+        "previous_evolution": 2
+    }
+},
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 4,
+    "fields": {
+        "title": "Проба",
+        "title_en": null,
+        "title_jp": null,
+        "description": null,
+        "image": "proba.png",
+        "previous_evolution": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 5,
+    "fields": {
+        "title": "Проба_2",
+        "title_en": null,
+        "title_jp": null,
+        "description": "Нечего сказать о пробе",
+        "image": "proba.png",
+        "previous_evolution": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemon",
+    "pk": 6,
+    "fields": {
+        "title": "Проба_3",
+        "title_en": null,
+        "title_jp": null,
+        "description": "",
+        "image": "",
+        "previous_evolution": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 1,
+    "fields": {
+        "pokemon": 1,
+        "lat": 55.753244,
+        "lon": 37.628423,
+        "appeared_at": null,
+        "disappeared_at": null,
+        "level": null,
+        "health": null,
+        "strength": null,
+        "defence": null,
+        "stamina": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 2,
+    "fields": {
+        "pokemon": 1,
+        "lat": 55.743244,
+        "lon": 37.635423,
+        "appeared_at": null,
+        "disappeared_at": null,
+        "level": null,
+        "health": null,
+        "strength": null,
+        "defence": null,
+        "stamina": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 3,
+    "fields": {
+        "pokemon": 2,
+        "lat": 55.729472,
+        "lon": 37.692479,
+        "appeared_at": null,
+        "disappeared_at": null,
+        "level": null,
+        "health": null,
+        "strength": null,
+        "defence": null,
+        "stamina": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 4,
+    "fields": {
+        "pokemon": 1,
+        "lat": 1.0,
+        "lon": 22.0,
+        "appeared_at": "2021-09-12T11:04:59Z",
+        "disappeared_at": "2021-09-12T11:06:20Z",
+        "level": null,
+        "health": null,
+        "strength": null,
+        "defence": null,
+        "stamina": null
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 5,
+    "fields": {
+        "pokemon": 4,
+        "lat": 55.795179,
+        "lon": 37.697149,
+        "appeared_at": "2021-09-13T14:00:17Z",
+        "disappeared_at": "2021-09-13T14:00:19Z",
+        "level": 1,
+        "health": 1,
+        "strength": 1,
+        "defence": 1,
+        "stamina": 1
+    }
+},
+{
+    "model": "pokemon_entities.pokemonentity",
+    "pk": 6,
+    "fields": {
+        "pokemon": 3,
+        "lat": 55.795179,
+        "lon": 37.697149,
+        "appeared_at": "2021-09-14T18:13:14Z",
+        "disappeared_at": "2021-09-14T18:13:15Z",
+        "level": 1,
+        "health": 1,
+        "strength": 1,
+        "defence": 1,
+        "stamina": 1
+    }
+}
+]
