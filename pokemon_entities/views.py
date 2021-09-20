@@ -70,7 +70,6 @@ def show_all_pokemons(request):
     mapper = dict(zip(new_fields_names, current_fields_names))
 
     pokemons_on_page = (Pokemon.objects
-                        .exclude(image__isnull=True)
                         .filter(id__in=PokemonEntity.objects.values('pokemon'))
                         .extra(select=mapper)
                         .values(*mapper.keys()))
