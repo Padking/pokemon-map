@@ -6,14 +6,14 @@ from .custom_storage import OverwriteStorage
 class Pokemon(models.Model):
     title = models.CharField('имя покемона', max_length=200)
     title_en = models.CharField('имя покемона на англ. яз.',
-                                blank=True,
-                                max_length=200, null=True)
+                                blank=True, default='',
+                                max_length=200)
     title_jp = models.CharField('имя покемона на яп. яз.',
-                                blank=True,
-                                max_length=200, null=True)
-    description = models.TextField('о покемоне', blank=True, null=True)
-    image = models.ImageField('картинка покемона', blank=True, max_length=200,
-                              null=True, storage=OverwriteStorage())
+                                blank=True, default='',
+                                max_length=200)
+    description = models.TextField('о покемоне', blank=True, default='')
+    image = models.ImageField('картинка покемона', blank=True, default='',
+                              max_length=200, storage=OverwriteStorage())
     previous_evolution = models.ForeignKey('self', null=True, blank=True,
                                            on_delete=models.SET_NULL,
                                            related_name='next_evolutions',
