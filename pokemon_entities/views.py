@@ -123,7 +123,7 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon.update(about_pokemons_descendant)
 
-    pokemons_entities = (pokemons_kind.pokemonentity_set.all()
+    pokemons_entities = (pokemons_kind.pokemon_pokemonentities.all()
                          .select_related('pokemon')
                          .annotate(img_url=Concat(V(f'{absolute_uri}'),
                                    'pokemon__image'))
