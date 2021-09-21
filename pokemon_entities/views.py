@@ -28,23 +28,6 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
     ).add_to(folium_map)
 
 
-def get_pokemons_kind(by_id) -> Pokemon:
-    """Возвращает вид покемона при наличии особей."""
-    try:
-        pokemons_kind = (Pokemon.objects
-                         .filter(id__in=PokemonEntity.objects.values('pokemon'))
-                         .get(id=by_id))
-    except Pokemon.DoesNotExist:
-        invalid_id_msg = (
-            'Покемон не найден!<br>'
-            'Проверьте правильность записи в URL<br>'
-            f"идентификатора разновидности покемона '{by_id}'"
-        )
-        return invalid_id_msg
-
-    return pokemons_kind
-
-
 def show_all_pokemons(request):
 
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
@@ -74,9 +57,15 @@ def show_all_pokemons(request):
 
 def show_pokemon(request, pokemon_id):
 
-    pokemons_kind = get_pokemons_kind(pokemon_id)
-    if isinstance(pokemons_kind, str):
-        return HttpResponseNotFound(f'<h1>{pokemons_kind}</h1>')
+    try:
+        pokemons_kind = Pokemon.objects.get(id=pokemon_id)
+    except Pokemon.DoesNotExist:
+        invalid_id_msg = (
+            'Покемон не найден!<br>'
+            'Проверьте правильность записи в URL<br>'
+            f"идентификатора разновидности покемона '{pokemon_id}'"
+        )
+        return HttpResponseNotFound(f'<h1>{invalid_id_msg}</h1>')
 
     pokemon = {}
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
