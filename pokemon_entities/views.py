@@ -31,16 +31,22 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 def show_all_pokemons(request):
 
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
-    pokemons_entities = (PokemonEntity.objects
-                         .select_related('pokemon')
-                         .values('lat', 'lon', 'pokemon__image')
-                         .annotate(img_url=Concat(V(f'{absolute_uri}'),
-                                   'pokemon__image')))
+
+    pokemons_kinds = (Pokemon.objects
+                      .prefetch_related('pokemon_pokemonentities'))
+    batches_pokemons_entities_by_kind = []
+    for pokemons_kind in pokemons_kinds:
+        pokemons_entities_by_kind = (pokemons_kind.pokemon_pokemonentities
+                                     .values('lat', 'lon', 'pokemon__image')
+                                     .annotate(img_url=Concat(V(f'{absolute_uri}'),
+                                               'pokemon__image')))
+        batches_pokemons_entities_by_kind.append(pokemons_entities_by_kind)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for pokemon_entity in pokemons_entities:
-        add_pokemon(folium_map, pokemon_entity['lat'],
-                    pokemon_entity['lon'], pokemon_entity['img_url'])
+    for batch_pokemons_entities_by_kind in batches_pokemons_entities_by_kind:
+        for pokemon_entity in batch_pokemons_entities_by_kind:
+            add_pokemon(folium_map, pokemon_entity['lat'],
+                        pokemon_entity['lon'], pokemon_entity['img_url'])
 
     pokemons_on_page = (Pokemon.objects
                         .filter(id__in=PokemonEntity.objects.values('pokemon'))
