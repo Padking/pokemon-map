@@ -33,10 +33,10 @@ def show_all_pokemons(request):
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
 
     pokemons_kinds = (Pokemon.objects
-                      .prefetch_related('pokemon_pokemonentities'))
+                      .prefetch_related('entities'))
     batches_pokemons_entities_by_kind = []
     for pokemons_kind in pokemons_kinds:
-        pokemons_entities_by_kind = (pokemons_kind.pokemon_pokemonentities
+        pokemons_entities_by_kind = (pokemons_kind.entities
                                      .values('lat', 'lon', 'pokemon__image')
                                      .annotate(img_url=Concat(V(f'{absolute_uri}'),
                                                'pokemon__image')))
@@ -118,7 +118,7 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon.update(about_pokemons_descendant)
 
-    pokemons_entities = (pokemons_kind.pokemon_pokemonentities.all()
+    pokemons_entities = (pokemons_kind.entities.all()
                          .select_related('pokemon')
                          .annotate(img_url=Concat(V(f'{absolute_uri}'),
                                    'pokemon__image'))
