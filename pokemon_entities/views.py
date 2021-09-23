@@ -31,20 +31,17 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 def show_all_pokemons(request):
 
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
+    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
     pokemons_kinds = (Pokemon.objects
                       .prefetch_related('entities'))
-    batches_pokemons_entities_by_kind = []
     for pokemons_kind in pokemons_kinds:
         pokemons_entities_by_kind = (pokemons_kind.entities
                                      .values('lat', 'lon', 'pokemon__image')
                                      .annotate(img_url=Concat(V(f'{absolute_uri}'),
                                                'pokemon__image')))
-        batches_pokemons_entities_by_kind.append(pokemons_entities_by_kind)
 
-    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for batch_pokemons_entities_by_kind in batches_pokemons_entities_by_kind:
-        for pokemon_entity in batch_pokemons_entities_by_kind:
+        for pokemon_entity in pokemons_entities_by_kind:
             add_pokemon(folium_map, pokemon_entity['lat'],
                         pokemon_entity['lon'], pokemon_entity['img_url'])
 
@@ -53,7 +50,7 @@ def show_all_pokemons(request):
                         .annotate(pokemon_id=F('id'),
                                   title_ru=F('title'),
                                   img_url=Concat(V(f'{absolute_uri}'),
-                                  'image')))
+                                                 'image')))
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
@@ -118,8 +115,7 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon.update(about_pokemons_descendant)
 
-    pokemons_entities = (pokemons_kind.entities.all()
-                         .select_related('pokemon')
+    pokemons_entities = (pokemons_kind.entities
                          .annotate(img_url=Concat(V(f'{absolute_uri}'),
                                    'pokemon__image'))
                          .values('img_url', 'lat', 'lon'))
