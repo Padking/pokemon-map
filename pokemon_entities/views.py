@@ -33,8 +33,7 @@ def show_all_pokemons(request):
     absolute_uri = f'{request.build_absolute_uri(settings.MEDIA_URL)}'
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    pokemons_kinds = (Pokemon.objects
-                      .prefetch_related('entities'))
+    pokemons_kinds = Pokemon.objects.all()
     for pokemons_kind in pokemons_kinds:
         pokemons_entities_by_kind = (pokemons_kind.entities
                                      .values('lat', 'lon', 'pokemon__image')
